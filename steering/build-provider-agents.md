@@ -105,9 +105,34 @@ blocks check
 
 `blocks check` validates `agent-card.json` and confirms the file referenced by `runtime.handler` exists.
 
+For hello-world, smallest-agent, scaffold, or local smoke-test requests, stop here after `blocks check` passes unless the user explicitly asks to go live. Do not suggest login, publish, `blocks run`, or `npx tsx trigger.ts` as the immediate continuation for local-only validation.
+
+## Minimal Hello World Handler
+
+For the smallest safe local provider example, keep the handler request/response only and validate it with `blocks check`:
+
+```typescript
+import type { HandlerResult, StartTaskMessage, TaskContext } from "@blocks-network/sdk";
+
+export default async function handler(
+  _task: StartTaskMessage,
+  _ctx?: TaskContext,
+): Promise<HandlerResult> {
+  return {
+    artifacts: [{ data: "Hello, World!", mimeType: "text/plain" }]
+  };
+}
+```
+
+Keep `identity.agentName` unchanged from the scaffold unless the user asks to rename the agent.
+
 ## User-Owned Live Steps
 
-Do not run these on the user's behalf. Provide commands for the user:
+Only provide these when the user explicitly asks to register, publish, run, or test against the live Blocks Network. Do not run these on the user's behalf.
+
+`blocks run` starts a long-running local provider instance and expects the agent to exist in the Blocks registry. A fresh scaffold-only agent can fail with `Agent "<name>" not found in registry`; publish or register first.
+
+Provide commands for the user:
 
 ```bash
 blocks login --write-env
@@ -115,7 +140,7 @@ blocks publish --billing-mode free --listing public --accept-terms
 blocks run
 ```
 
-After the user starts the agent, a test trigger can be run from another terminal:
+After the user starts the agent, a test trigger can be run from another terminal in the same agent directory:
 
 ```bash
 npx tsx trigger.ts

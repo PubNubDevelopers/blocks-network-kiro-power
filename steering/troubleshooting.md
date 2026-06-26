@@ -58,6 +58,41 @@ blocks publish --billing-mode free --listing public --accept-terms
 
 Do not run this command on the user's behalf.
 
+## `blocks run` Says Agent Not Found
+
+Symptom:
+
+- `Agent "<name>" not found in registry`
+
+Cause:
+
+- `blocks run` starts a live provider instance and expects the agent to already be registered or published in the Blocks registry.
+- The user only scaffolded and validated the agent locally.
+
+Fix:
+
+- For local-only hello-world or scaffold smoke tests, stop at `blocks check`; do not run `blocks run`.
+- If the user explicitly wants to go live, have the user run login and publish or register first, then run `blocks run` themselves.
+
+## `trigger.ts` Not Found
+
+Symptom:
+
+- `Cannot find module .../trigger.ts`
+
+Cause:
+
+- The trigger command was run from the parent directory instead of the generated agent directory, or the scaffold does not include `trigger.ts`.
+
+Fix:
+
+```bash
+cd ./my_agent
+npx tsx trigger.ts
+```
+
+Only run the trigger after the provider instance is already running.
+
 ## `blocks check` Fails
 
 Common causes:

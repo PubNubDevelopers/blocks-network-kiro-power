@@ -94,6 +94,8 @@ Multiple steering files may be needed for one task. For example, a streaming pro
 
 - Do not run `blocks publish` on the user's behalf. Give the user the exact command to run.
 - Do not run `blocks run` on the user's behalf. It starts a long-running local agent process; the user should own that process.
+- For hello-world, smallest-agent, scaffold, or local smoke-test requests, stop at `blocks check` unless the user explicitly asks to go live. Do not offer `blocks run`, `trigger.ts`, login, or publish as the immediate continuation.
+- `blocks run` requires an agent that is already registered or published in the Blocks registry. Fresh scaffold-only agents can fail with `Agent "<name>" not found in registry`.
 - Do not submit paid tasks, request billing top-ups, or use private-agent credentials unless the user clearly requested that specific action.
 - Do not write secrets into committed files. Use `.env`, host MCP config, or environment variables.
 - Always pass explicit non-interactive flags for Blocks CLI commands in agent-driven shells.
@@ -114,7 +116,9 @@ cd my_agent
 blocks check
 ```
 
-Then implement `handler.ts`, update `agent-card.json`, and ask the user to run:
+Then implement `handler.ts`, update `agent-card.json`, and run `blocks check` again. For a local hello-world or scaffold smoke test, this is the stopping point.
+
+Only when the user explicitly asks to register, publish, or run the agent, load `steering/publish-manage-agents.md` and hand off the live commands. Do not present these as the default next step for a local smoke test:
 
 ```bash
 blocks login --write-env

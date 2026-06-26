@@ -87,6 +87,10 @@ Run `blocks check` before handing off publish commands.
 
 Do not run `blocks run` on the user's behalf. It starts a long-running local process.
 
+Only discuss `blocks run` after the user explicitly asks to start a live provider instance. For local scaffold or hello-world smoke tests, `blocks check` is the stopping point.
+
+`blocks run` expects the agent to be registered or published in the Blocks registry. If the user only scaffolded the project, `blocks run` can fail with `Agent "<name>" not found in registry`. Have the user complete a register or publish step first.
+
 Ask the user to run:
 
 ```bash
@@ -99,6 +103,8 @@ If dependencies are missing:
 npm install
 blocks run
 ```
+
+Run `npx tsx trigger.ts` only after `blocks run` is already active, and run it from the agent directory that contains `trigger.ts`.
 
 ## Dashboard
 
