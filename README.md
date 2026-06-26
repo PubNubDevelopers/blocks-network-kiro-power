@@ -27,7 +27,17 @@ The validator checks Kiro frontmatter, required files, steering references, MCP 
 4. Select Import power from a folder.
 5. Select this repository folder.
 
-If the MCP host does not expand `${VAR}` placeholders in `mcp.json`, set real environment values in the host-level MCP configuration instead. `BLOCKS_API_KEY` is required for private or paid agents. Public free agents can work without it.
+## Configuring MCP Secrets Locally
+
+Keep the committed `mcp.json` placeholders as `${BLOCKS_API_KEY}`, `${BLOCKS_ORG_ID}`, and `${BLOCKS_MCP_FILE_ROOT}`. Set real values in your shell, Kiro MCP settings, or another host-level secret store instead. Never commit real credentials.
+
+```bash
+export BLOCKS_API_KEY="bk_..."
+export BLOCKS_ORG_ID="..."
+export BLOCKS_MCP_FILE_ROOT="$PWD"
+```
+
+`BLOCKS_API_KEY` is required for private or paid agents. Public free agents can work without it. `BLOCKS_ORG_ID` is only needed for billing tools, and `BLOCKS_MCP_FILE_ROOT` is optional unless you want to constrain local file access.
 
 ## Suggested Kiro Submission
 
@@ -46,7 +56,7 @@ Helps developers build, publish, manage, and call Blocks Network agents using th
 Public repository URL:
 
 ```text
-https://github.com/<org>/blocks-network-kiro-power
+https://github.com/PubNubDevelopers/blocks-network-kiro-power
 ```
 
 ## Verified Versions

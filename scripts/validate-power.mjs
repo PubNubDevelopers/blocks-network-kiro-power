@@ -1,7 +1,8 @@
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = new URL("..", import.meta.url).pathname;
+const root = fileURLToPath(new URL("..", import.meta.url));
 const errors = [];
 
 function fail(message) {
@@ -102,12 +103,26 @@ if (server?.command !== "npx") fail('mcp.json command must be "npx"');
 if (JSON.stringify(server?.args) !== JSON.stringify(["-y", "@blocks-network/mcp-server"])) {
   fail('mcp.json args must be ["-y", "@blocks-network/mcp-server"]');
 }
-for (const envName of ["BLOCKS_API_KEY", "BLOCKS_ORG_ID", "BLOCKS_MCP_FILE_ROOT"]) {
-  if (!(envName in (server?.env ?? {}))) fail(`mcp.json missing env placeholder: ${envName}`);
+const expectedEnv = {
+  BLOCKS_API_KEY: "${BLOCKS_API_KEY}",
+  BLOCKS_ORG_ID: "${BLOCKS_ORG_ID}",
+  BLOCKS_MCP_FILE_ROOT: "${BLOCKS_MCP_FILE_ROOT}"
+};
+for (const [envName, expectedValue] of Object.entries(expectedEnv)) {
+  if (server?.env?.[envName] !== expectedValue) {
+    fail(`mcp.json env.${envName} must be ${expectedValue}`);
+  }
 }
 
-const allMarkdown = walk(".")
-  .filter((file) => file.endsWith(".md"))
+function fencedCodeBlocks(body) {
+  return [...body.matchAll(/```[^\n]*\n([\s\S]*?)```/g)].map((match) => match[1]);
+}
+
+const allMarkdown = [
+  "POWER.md",
+  "README.md",
+  ...walk("steering").filter((file) => file.endsWith(".md"))
+]
   .map((file) => [file, read(file)]);
 
 for (const [file, body] of allMarkdown) {
@@ -115,8 +130,21 @@ for (const [file, body] of allMarkdown) {
   if (body.includes("@blocks-network/mcp-server\"]") && !body.includes("\"-y\", \"@blocks-network/mcp-server\"")) {
     fail(`${file} references MCP server without npx -y`);
   }
-  if (body.includes("blocks login --write-env\nblocks publish --billing-mode free --listing public --accept-terms\nblocks run")) {
-    fail(`${file} uses stale publish-first live-provider handoff`);
+  for (const block of fencedCodeBlocks(body)) {
+    if (block.includes("blocks publish")) {
+      for (const requiredFlag of ["--billing-mode", "--listing", "--accept-terms"]) {
+        if (!block.includes(requiredFlag)) {
+          fail(`${file} has a blocks publish example without ${requiredFlag}`);
+        }
+      }
+    }
+    if (block.includes("blocks publish") && block.includes("blocks run")) {
+      const registerIndex = block.indexOf("blocks register");
+      const runIndex = block.indexOf("blocks run");
+      if (registerIndex === -1 || registerIndex > runIndex) {
+        fail(`${file} has a live-provider code block with blocks publish and blocks run but no earlier blocks register`);
+      }
+    }
   }
 }
 

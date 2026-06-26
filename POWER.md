@@ -32,7 +32,12 @@ This power includes a Blocks Network MCP server configuration:
   "mcpServers": {
     "blocks-network": {
       "command": "npx",
-      "args": ["-y", "@blocks-network/mcp-server"]
+      "args": ["-y", "@blocks-network/mcp-server"],
+      "env": {
+        "BLOCKS_API_KEY": "${BLOCKS_API_KEY}",
+        "BLOCKS_ORG_ID": "${BLOCKS_ORG_ID}",
+        "BLOCKS_MCP_FILE_ROOT": "${BLOCKS_MCP_FILE_ROOT}"
+      }
     }
   }
 }

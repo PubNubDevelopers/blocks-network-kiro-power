@@ -54,8 +54,7 @@ export default async function handler(
   task: StartTaskMessage,
   ctx?: TaskContext,
 ): Promise<HandlerResult> {
-  const input = task.requestParts?.[0];
-  const text = typeof input === "string" ? input : JSON.stringify(input ?? "");
+  const text = task.requestParts?.[0]?.text ?? "";
   ctx?.reportStatus("Processing...");
 
   return {

@@ -73,11 +73,16 @@ import { textPart, filePart } from "@blocks-network/sdk";
 
 requestParts: [
   textPart(JSON.stringify({ query: "weather", limit: 10 }), "request"),
-  filePart(fileBytes, { partId: "document", mimeType: "application/pdf" })
+  filePart(fileBytes, {
+    partId: "document",
+    fileName: "document.pdf",
+    contentType: "application/pdf"
+  })
 ]
 ```
 
 For JSON form inputs, `textPart` usually carries a JSON-stringified object whose keys match the agent card schema.
+For binary or file inputs, use `filePart(...)` with `contentType` and, when available, `fileName`.
 
 ## Sessions
 
