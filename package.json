@@ -1,0 +1,11 @@
+{
+  "name": "blocks-network-kiro-power",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Kiro Power for Blocks Network CLI, SDK, MCP, and agent workflows.",
+  "scripts": {
+    "test": "node scripts/validate-power.mjs",
+    "validate": "node scripts/validate-power.mjs"
+  }
+}
