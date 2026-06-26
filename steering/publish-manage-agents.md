@@ -43,17 +43,33 @@ Use `blocks whoami --json` when a workflow needs `org_id`, key expiry, or struct
 
 ## Register
 
-For first private registration:
+Run `blocks register` after `blocks login --write-env` and `blocks check`. It is the recommended first registry step for a provider agent because it creates or updates a Private + Free agent without visibility, billing, or pricing prompts.
+
+Do not run `blocks register` on the user's behalf unless they explicitly ask to register the agent. It changes registry state.
+
+For the first private live test:
 
 ```bash
+blocks login --write-env
+blocks check
 blocks register
 ```
 
-This is usually the first network step before public publishing.
+Flags to know:
+
+| Flag | Purpose |
+| --- | --- |
+| `--api-key` | Uses a pre-obtained API key. |
+| `--api-key-stdin` | Reads an API key from stdin, useful for CI or headless sessions. |
+| `--org-name` | Sets organization name when needed. |
+
+`blocks register` always uses `--listing private` and `--billing-mode free`. To change visibility, billing mode, pricing, or trial settings later, use `blocks publish`.
 
 ## Publish
 
-Do not run `blocks publish` on the user's behalf. Publishing accepts legal attestations and changes registry state.
+Do not run `blocks publish` on the user's behalf. Publishing can change visibility, billing mode, pricing, trial settings, and legal attestations.
+
+Use `blocks publish` when the user wants to make an already-registered agent public, paid, or otherwise change listing and billing settings. For simple Private + Free testing, prefer `blocks register`.
 
 Give the user one of these commands:
 
@@ -81,7 +97,7 @@ Flags to know:
 | `--org-name` | Sets organization name on first publish. |
 | `--api-key`, `--api-key-stdin` | Authenticates inline. |
 
-Run `blocks check` before handing off publish commands.
+Run `blocks check` before handing off register or publish commands.
 
 ## Run
 
@@ -89,7 +105,7 @@ Do not run `blocks run` on the user's behalf. It starts a long-running local pro
 
 Only discuss `blocks run` after the user explicitly asks to start a live provider instance. For local scaffold or hello-world smoke tests, `blocks check` is the stopping point.
 
-`blocks run` expects the agent to be registered or published in the Blocks registry. If the user only scaffolded the project, `blocks run` can fail with `Agent "<name>" not found in registry`. Have the user complete a register or publish step first.
+`blocks run` expects the agent to be registered or published in the Blocks registry. If the user only scaffolded the project, `blocks run` can fail with `Agent "<name>" not found in registry`. Have the user complete `blocks register` for Private + Free testing, or `blocks publish` when changing public/private or free/paid posture.
 
 Ask the user to run:
 
@@ -133,11 +149,11 @@ blocks invite accept <token>
 
 ## Name Conflicts
 
-If publish fails because `identity.agentName` is taken:
+If register or publish fails because `identity.agentName` is taken:
 
 1. Tell the user the name is globally unavailable.
 2. Ask for a more unique agent name.
 3. Update `identity.agentName`.
 4. Rename the directory only if it reduces confusion.
 5. Re-run `blocks check`.
-6. Ask the user to run publish again.
+6. Ask the user to run register or publish again, depending on the workflow.

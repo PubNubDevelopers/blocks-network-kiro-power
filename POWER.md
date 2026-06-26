@@ -92,16 +92,19 @@ Multiple steering files may be needed for one task. For example, a streaming pro
 
 ## Core Safety Rules
 
+- Do not run `blocks register` on the user's behalf unless the user explicitly asks to register the agent. It changes registry state by creating or updating a Private + Free agent.
 - Do not run `blocks publish` on the user's behalf. Give the user the exact command to run.
 - Do not run `blocks run` on the user's behalf. It starts a long-running local agent process; the user should own that process.
-- For hello-world, smallest-agent, scaffold, or local smoke-test requests, stop at `blocks check` unless the user explicitly asks to go live. Do not offer `blocks run`, `trigger.ts`, login, or publish as the immediate continuation.
+- For hello-world, smallest-agent, scaffold, or local smoke-test requests, stop at `blocks check` unless the user explicitly asks to go live. Do not offer register, `blocks run`, `trigger.ts`, login, or publish as the immediate continuation.
+- Current live-provider flow is `blocks login --write-env` -> `blocks register` -> `blocks run`. `blocks register` is the recommended first registry step because it creates a Private + Free agent without visibility or billing prompts.
+- Use `blocks publish` later to make an already-registered agent public, paid, or otherwise change visibility, billing mode, pricing, or trial settings.
 - `blocks run` requires an agent that is already registered or published in the Blocks registry. Fresh scaffold-only agents can fail with `Agent "<name>" not found in registry`.
 - Do not submit paid tasks, request billing top-ups, or use private-agent credentials unless the user clearly requested that specific action.
 - Do not write secrets into committed files. Use `.env`, host MCP config, or environment variables.
 - Always pass explicit non-interactive flags for Blocks CLI commands in agent-driven shells.
 - Always use `--language node` unless the user explicitly requests Python.
 - Use `--mode`, not legacy `--type`, with current Blocks CLI examples.
-- Prefer `blocks check` before any publish handoff.
+- Prefer `blocks check` before any register or publish handoff.
 
 ## Quick Workflows
 
@@ -118,12 +121,20 @@ blocks check
 
 Then implement `handler.ts`, update `agent-card.json`, and run `blocks check` again. For a local hello-world or scaffold smoke test, this is the stopping point.
 
-Only when the user explicitly asks to register, publish, or run the agent, load `steering/publish-manage-agents.md` and hand off the live commands. Do not present these as the default next step for a local smoke test:
+Only when the user explicitly asks to register, publish, or run the agent, load `steering/publish-manage-agents.md` and hand off the live commands. Do not present these as the default next step for a local smoke test.
+
+Recommended first live handoff:
 
 ```bash
 blocks login --write-env
-blocks publish --billing-mode free --listing public --accept-terms
+blocks register
 blocks run
+```
+
+When the private test works and the user wants public browser callers, hand off:
+
+```bash
+blocks publish --billing-mode free --listing public --accept-terms
 ```
 
 ### Call Agents From Kiro

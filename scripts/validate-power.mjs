@@ -87,7 +87,10 @@ for (const text of [
   "https://github.com/blocksnetwork/blocks-sdk/issues",
   "https://discord.gg/cAmDfWBbzP",
   "Blocks Network SDK License Agreement",
-  "NOASSERTION"
+  "NOASSERTION",
+  "Current live-provider flow is `blocks login --write-env` -> `blocks register` -> `blocks run`",
+  "Use `blocks publish` later to make an already-registered agent public",
+  "blocks register"
 ]) {
   if (!power.includes(text)) fail(`POWER.md missing required text: ${text}`);
 }
@@ -111,6 +114,9 @@ for (const [file, body] of allMarkdown) {
   if (body.includes("--type ")) fail(`${file} uses stale --type CLI syntax`);
   if (body.includes("@blocks-network/mcp-server\"]") && !body.includes("\"-y\", \"@blocks-network/mcp-server\"")) {
     fail(`${file} references MCP server without npx -y`);
+  }
+  if (body.includes("blocks login --write-env\nblocks publish --billing-mode free --listing public --accept-terms\nblocks run")) {
+    fail(`${file} uses stale publish-first live-provider handoff`);
   }
 }
 

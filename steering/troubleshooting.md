@@ -50,7 +50,14 @@ blocks login --write-env --dir ./my_agent
 
 In non-interactive shells, bare `blocks publish` waits for prompts.
 
-Give the user explicit flags:
+If the user only wants Private + Free testing, use `blocks register` instead:
+
+```bash
+blocks login --write-env
+blocks register
+```
+
+If the user wants public, paid, or specific listing/billing settings, give the user explicit publish flags:
 
 ```bash
 blocks publish --billing-mode free --listing public --accept-terms
@@ -72,7 +79,8 @@ Cause:
 Fix:
 
 - For local-only hello-world or scaffold smoke tests, stop at `blocks check`; do not run `blocks run`.
-- If the user explicitly wants to go live, have the user run login and publish or register first, then run `blocks run` themselves.
+- If the user explicitly wants to go live for a private test, have the user run `blocks login --write-env`, `blocks register`, then `blocks run` themselves.
+- If the user explicitly wants public or paid discovery, have the user run `blocks publish` with explicit listing and billing flags before `blocks run`.
 
 ## `trigger.ts` Not Found
 

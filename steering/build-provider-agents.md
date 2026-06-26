@@ -105,7 +105,7 @@ blocks check
 
 `blocks check` validates `agent-card.json` and confirms the file referenced by `runtime.handler` exists.
 
-For hello-world, smallest-agent, scaffold, or local smoke-test requests, stop here after `blocks check` passes unless the user explicitly asks to go live. Do not suggest login, publish, `blocks run`, or `npx tsx trigger.ts` as the immediate continuation for local-only validation.
+For hello-world, smallest-agent, scaffold, or local smoke-test requests, stop here after `blocks check` passes unless the user explicitly asks to go live. Do not suggest login, register, publish, `blocks run`, or `npx tsx trigger.ts` as the immediate continuation for local-only validation.
 
 ## Minimal Hello World Handler
 
@@ -130,13 +130,15 @@ Keep `identity.agentName` unchanged from the scaffold unless the user asks to re
 
 Only provide these when the user explicitly asks to register, publish, run, or test against the live Blocks Network. Do not run these on the user's behalf.
 
-`blocks run` starts a long-running local provider instance and expects the agent to exist in the Blocks registry. A fresh scaffold-only agent can fail with `Agent "<name>" not found in registry`; publish or register first.
+`blocks register` is the current recommended first live step. It registers the agent as Private + Free without asking the user to choose visibility, billing mode, or pricing. `blocks publish` is for later promotion or updates to visibility, billing mode, pricing, or trial settings.
 
-Provide commands for the user:
+`blocks run` starts a long-running local provider instance and expects the agent to exist in the Blocks registry. A fresh scaffold-only agent can fail with `Agent "<name>" not found in registry`; register or publish first.
+
+Provide commands for the user for the first private live test:
 
 ```bash
 blocks login --write-env
-blocks publish --billing-mode free --listing public --accept-terms
+blocks register
 blocks run
 ```
 
@@ -144,4 +146,10 @@ After the user starts the agent, a test trigger can be run from another terminal
 
 ```bash
 npx tsx trigger.ts
+```
+
+After the private test works and the user wants browser callers to try the agent publicly, provide:
+
+```bash
+blocks publish --billing-mode free --listing public --accept-terms
 ```
