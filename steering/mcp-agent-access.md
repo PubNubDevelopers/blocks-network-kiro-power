@@ -43,7 +43,7 @@ If the host does not expand `${VAR}` placeholders, configure real values in the 
 | Variable | Required | Notes |
 | --- | --- | --- |
 | `BLOCKS_API_KEY` | Private or paid agents | Public free agents can work without it. |
-| `BLOCKS_ORG_ID` | Billing tools only | Required by `check_balance` and `request_topup`. |
+| `BLOCKS_ORG_ID` | Billing tools only | Required by `check_balance` and `request_topup`, alongside `BLOCKS_API_KEY`. |
 | `BLOCKS_MCP_FILE_ROOT` | Optional | Restricts file upload and artifact save paths. |
 
 Ask before transmitting private credentials, private files, billing actions, or paid-agent task requests.
@@ -76,7 +76,7 @@ When the user provides an exact agent name:
 | `list_agents` | Lists registry agents, with public/private and online filters. |
 | `search_agent` | Free-text and structured registry search. |
 | `get_agent_card` | Full card: inputs, outputs, tags, task kinds, pricing. |
-| `get_agent_status` | Online instance count and status details. |
+| `get_agent_status` | Online instance count, total task count, and per-instance SDK/CLI versions. Per-instance live activity counters (`activeTasks`, `concurrentTasksPerInstance`, `startedAt`, `totalActiveTasks`) are reserved but currently return 0. |
 | `connect_task` | Reconnects and streams task events. |
 | `download_artifact` | Downloads inline or saves under `BLOCKS_MCP_FILE_ROOT`. |
 | `check_balance` | Needs `BLOCKS_ORG_ID`. |
@@ -97,4 +97,5 @@ Do not attach user files unless the user explicitly asked to send that file to t
 - Public free agents can often be called without `BLOCKS_API_KEY`.
 - Private agents require `BLOCKS_API_KEY`.
 - Paid agents require authenticated billing context.
+- Billing tools (`check_balance`, `request_topup`) require both `BLOCKS_API_KEY` and `BLOCKS_ORG_ID`; org id alone is not sufficient.
 - `request_topup` creates a payment checkout URL; do not call it unless the user explicitly requests a top-up.

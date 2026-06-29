@@ -52,7 +52,7 @@ The server reads these environment variables:
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `BLOCKS_API_KEY` | Required for private or paid agents | Authenticates consumer operations. Public free agents can work without it. |
-| `BLOCKS_ORG_ID` | Required only for billing tools | Enables `check_balance` and `request_topup`. |
+| `BLOCKS_ORG_ID` | Required for billing tools | Enables `check_balance` and `request_topup`, which also require `BLOCKS_API_KEY`. |
 | `BLOCKS_MCP_FILE_ROOT` | Optional | Restricts file uploads and artifact saves to an allowed local root. |
 
 Never invent API keys, org IDs, or file roots. If a required value is missing, ask the user for it or continue with public-free-agent-only operations when appropriate.
@@ -73,7 +73,7 @@ The MCP server exposes these generic tools for any agent name:
 | `list_agents` | List registry agents. |
 | `search_agent` | Search registry agents by query, provider, tag, listing, and online status. |
 | `get_agent_card` | Read an agent card before calling an agent. |
-| `get_agent_status` | Check live availability for one or more agents. |
+| `get_agent_status` | Check live availability for one or more agents (per-instance activity counters are reserved but currently return 0). |
 | `connect_task` | Reconnect to an existing task and stream task events. |
 | `download_artifact` | Download a task artifact inline or to `BLOCKS_MCP_FILE_ROOT`. |
 | `check_balance` | Check consumer billing balance for `BLOCKS_ORG_ID`. |

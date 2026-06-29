@@ -37,7 +37,7 @@ export BLOCKS_ORG_ID="..."
 export BLOCKS_MCP_FILE_ROOT="$PWD"
 ```
 
-`BLOCKS_API_KEY` is required for private or paid agents. Public free agents can work without it. `BLOCKS_ORG_ID` is only needed for billing tools, and `BLOCKS_MCP_FILE_ROOT` is optional unless you want to constrain local file access.
+`BLOCKS_API_KEY` is required for private or paid agents. Public free agents can work without it. The billing tools (`check_balance` and `request_topup`) require both `BLOCKS_API_KEY` and `BLOCKS_ORG_ID`. `BLOCKS_MCP_FILE_ROOT` is optional unless you want to constrain local file access.
 
 ## Suggested Kiro Submission
 
